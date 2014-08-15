@@ -2,6 +2,7 @@ require 'active_record'
 require 'rspec'
 
 require './lib/hero'
+require './lib/leagues'
 
 ActiveRecord::Base.establish_connection(YAML::load(File.open('./db/config.yml'))["test"])
 
