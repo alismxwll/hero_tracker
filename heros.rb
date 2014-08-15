@@ -2,6 +2,7 @@ require 'active_record'
 require './lib/hero.rb'
 require './lib/colors.rb'
 require './lib/leagues.rb'
+require 'pry'
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
 development_configuration = database_configurations['development']
@@ -75,7 +76,7 @@ def league_menu
     when 'p'
       add_hero_to_league
     when 'l'
-      list_league
+      list_heroes_in_league
     when 'x'
       puts "returning to Main"
     else
@@ -97,10 +98,12 @@ end
 def list_heroes
   system("clear")
   puts "Here are all the heroes in our system."
-  puts "(id) Name  (trained)"
-  puts "--------------------"
+  puts "(id) Name  (trained) (league)"
+  puts "----------------------------"
   heroes = Hero.all.sort
-  heroes.each { |hero| puts "(#{hero.id}) #{hero.name}: #{hero.power}" + " (#{hero.trained})".blue }
+  # league = League.all.where(id: hero.league_id)
+  League.find
+  heroes.each { |hero| puts "(#{hero.id}) #{hero.name}: #{hero.power}" + " (#{hero.trained})".blue + "#{hero.league_id}"}
   puts "\n\n"
 end
 
@@ -110,6 +113,16 @@ def list_league
   leagues = League.all
   leagues.each { |league| puts "(#{league.id}) #{league.name}"}
   puts "\n\n"
+end
+
+def list_heroes_in_league
+  list_league
+  puts "Choose a league to see the heroes in it:"
+  league_choice = gets.chomp.to_i
+  current_league = League.find(league_choice)
+  puts "\n\n"
+  heroes = Hero.find(league_choice)
+  binding.pry
 end
 
 def add_league
@@ -130,7 +143,26 @@ def complete_training
 end
 
 def add_hero_to_league
-
+  list_league
+  puts "Choose a league (#) to add a hero to it:"
+  league_choice = gets.chomp.to_i
+  current_league = League.find(league_choice)
+  puts "\n\n"
+  list_heroes
+  puts "Choose a hero (#) to add to #{current_league.name}"
+  hero_choice = gets.chomp.to_i
+  current_hero = Hero.find(hero_choice)
+  current_hero.update(league_id: league_choice)
+  puts "#{current_hero.name} is now in #{current_league.name}"
 end
 
 welcome
+
+
+
+
+
+
+
+
+
