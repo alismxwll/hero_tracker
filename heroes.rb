@@ -43,7 +43,11 @@ def add_hero
   puts "#{hero_name}, who has the power of #{hero_power} has been added to our system. Thank you. You are making the world safer by reporting all heroes you encounter, we promise we are not using this information for nerfarious purposes."
 end
 
-
+def list_heroes
+  puts ""
+  heroes = Hero.all
+  heroes.each { |hero| puts hero.name }
+end
 
 
 
